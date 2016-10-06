@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -21,5 +22,14 @@ namespace LSKYGuestAccountControl
                 }
             }
         }
+
+        public static string dbConnectionString_Internal = ConfigurationManager.ConnectionStrings["Internal"].ConnectionString;
+        
+        public static string LoginURL { get { return "/Login/index.aspx"; } }
+        public static string IndexURL { get { return "/index.aspx"; } }
+
+        public static string ApplicationRoot { get { return HttpContext.Current.Request.ApplicationPath; } }
+
+        public static string CookieName { get { return "LSKYSDGUESTCONTROL"; } }
     }
 }

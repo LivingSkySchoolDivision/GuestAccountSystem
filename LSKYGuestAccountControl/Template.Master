@@ -1,0 +1,23 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Template.master.cs" Inherits="LSKYGuestAccountControl.Template" %>
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <link rel="stylesheet" href="~/Styles.css" /> 
+    <link rel="stylesheet" href="~/Normalize.css" /> 
+    <title>In/Out board</title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <asp:ContentPlaceHolder ID="pageBody" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </div>
+    </form>
+</body>
+</html>
