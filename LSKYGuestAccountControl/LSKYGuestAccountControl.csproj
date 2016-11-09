@@ -72,6 +72,7 @@
     <Content Include="Login\index.aspx" />
     <Content Include="packages.config" />
     <Content Include="Template.Master" />
+    <None Include="Properties\PublishProfiles\guests.lskysd.ca.pubxml" />
     <None Include="Web.config.Debug.template">
       <DependentUpon>Web.config.template</DependentUpon>
     </None>
