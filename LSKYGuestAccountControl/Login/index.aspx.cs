@@ -35,7 +35,7 @@ namespace LSKYGuestAccountControl.Login
             {
                 tblAlreadyLoggedIn.Visible = true;
                 tblLoginform.Visible = false;
-                lblUsername.Text = currentUser.username;
+                lblUsername.Text = currentUser.Username;
             }
 
             Page.SetFocus(txtUsername);
@@ -72,32 +72,40 @@ namespace LSKYGuestAccountControl.Login
                 )
             {
                 // Validate username and password
-                if (Authentication.ValidateADCredentials("lskysd", username, password))
+                if (Authentication.ValidateADCredentials(Settings.Domain, username, password))
                 {
                     // Check if the password is complex enough
-
                     if (Authentication.IsPasswordStrongEnough(password))
                     {
-                        LoginSessionRepository loginSessionRepo = new LoginSessionRepository();
-
-                        // Attempt to create a session for the user
-                        string newSessionID = loginSessionRepo.CreateSession(username, Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
-
-                        if (newSessionID != string.Empty)
+                        // Check if the user is a member of a required group
+                        if (Authentication.IsUserInAValidADGroup(Settings.Domain, username))
                         {
-                            // Create a cookie with the user's shiny new session ID
-                            createCookie(newSessionID);
+                            LoginSessionRepository loginSessionRepo = new LoginSessionRepository();
 
-                            // Redirect to the front page
-                            tblAlreadyLoggedIn.Visible = true;
-                            tblLoginform.Visible = false;
-                            lblUsername.Text = username;
-                            redirectToIndex();
+                            // Attempt to create a session for the user
+                            string newSessionID = loginSessionRepo.CreateSession(username, Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
+
+                            if (newSessionID != string.Empty)
+                            {
+                                // Create a cookie with the user's shiny new session ID
+                                createCookie(newSessionID);
+
+                                // Redirect to the front page
+                                tblAlreadyLoggedIn.Visible = true;
+                                tblLoginform.Visible = false;
+                                lblUsername.Text = username;
+                                redirectToIndex();
+                            }
+                            else
+                            {
+                                displayError(
+                                    "<b style=\"color: red\">Access denied:</b> There was an error creating your login session.<br><br> Please create a ticket in our <a href=\"https://helpdesk.lskysd.ca\">Help Desk system</a>.");
+                            }
                         }
                         else
                         {
                             displayError(
-                                "<b style=\"color: red\">Access denied:</b> Your credentials worked, but your account is not authorized for access to this site.<br><br> To request access to this site, please create a ticket in our <a href=\"https://helpdesk.lskysd.ca\">Help Desk system</a>.");
+                                "<b style=\"color: red\">Access denied:</b> Your account is not authorized for access to this site.<br><br> To request access to this site, please create a ticket in our <a href=\"https://helpdesk.lskysd.ca\">Help Desk system</a>.");
                         }
                     }
                     else

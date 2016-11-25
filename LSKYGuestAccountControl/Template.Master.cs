@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using LSKYGuestAccountControl.ExtensionMethods;
 using LSKYGuestAccountControl.Model;
 using LSKYGuestAccountControl.Repositories;
+using LSKYGuestAccountControl.Static;
 
 namespace LSKYGuestAccountControl
 {
@@ -76,7 +78,8 @@ namespace LSKYGuestAccountControl
             }
             else
             {
-                Response.Write("<!-- Logged in: " + currentUser.username + " -->");
+                Response.Write("<!-- Logged in: " + currentUser.Username + " -->");
+                Response.Write("<!-- Is in valid group: " + Authentication.GetValidUserGroups(Settings.Domain, currentUser.Username).ToCommaSeparatedString() + "-->");
             }
 
         }

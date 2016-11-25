@@ -31,5 +31,6 @@ namespace LSKYGuestAccountControl
         public static string ApplicationRoot { get { return HttpContext.Current.Request.ApplicationPath; } }
 
         public static string CookieName { get { return "LSKYSDGUESTCONTROL"; } }
+        public static string Domain { get { return "LSKYSD.CA"; } }
     }
 }

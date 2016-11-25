@@ -15,12 +15,12 @@ namespace LSKYGuestAccountControl.Repositories
         {
             return new LoginSession()
             {
-                username = dataReader["username"].ToString(),
-                ip = dataReader["ip"].ToString(),
-                hash = dataReader["thumbprint"].ToString(),
-                useragent = dataReader["useragent"].ToString(),
-                starts = DateTime.Parse(dataReader["sessionstarts"].ToString()),
-                ends = DateTime.Parse(dataReader["sessionends"].ToString())
+                Username = dataReader["username"].ToString(),
+                IPAddress = dataReader["ip"].ToString(),
+                Thumbprint = dataReader["thumbprint"].ToString(),
+                UserAgent = dataReader["useragent"].ToString(),
+                SessionStarts = DateTime.Parse(dataReader["sessionstarts"].ToString()),
+                SessionEnds = DateTime.Parse(dataReader["sessionends"].ToString())
             };
         }
 
@@ -71,7 +71,7 @@ namespace LSKYGuestAccountControl.Repositories
                     Connection = connection,
                     CommandType = CommandType.Text,
                     CommandText =
-                        "SELECT * FROM sessions WHERE id_hash=@Hash AND ip=@IP AND useragent=@UA AND sessionstarts < {fn NOW()} AND sessionends > {fn NOW()};"
+                        "SELECT * FROM sessions WHERE thumbprint=@Hash AND ip=@IP AND useragent=@UA AND sessionstarts < {fn NOW()} AND sessionends > {fn NOW()};"
                 };
                 sqlCommand.Parameters.AddWithValue("@Hash", hash);
                 sqlCommand.Parameters.AddWithValue("@IP", ip);
@@ -108,7 +108,7 @@ namespace LSKYGuestAccountControl.Repositories
                     {
                         Connection = connection,
                         CommandType = CommandType.Text,
-                        CommandText = "DELETE FROM sessions WHERE id_hash=@Hash;"
+                        CommandText = "DELETE FROM sessions WHERE thumbprint=@Hash;"
                     };
                     sqlCommand.Parameters.AddWithValue("@Hash", hash);
                     sqlCommand.Connection.Open();
@@ -183,7 +183,7 @@ namespace LSKYGuestAccountControl.Repositories
             // If logging in during the work day, make a session last 8 hours
             // If logging in after hours, make the session only last 2 hours
 
-            TimeSpan sessionDuration = new TimeSpan(8, 0, 0);
+            TimeSpan sessionDuration = new TimeSpan(0, 30, 0);
 
             // Create a session in the database 
             // Also while we are querying the database, clear out expired sessions that are lingering, and clear any existing sessions for
@@ -194,7 +194,7 @@ namespace LSKYGuestAccountControl.Repositories
                 {
                     sqlCommand.Connection = connection;
                     sqlCommand.CommandType = CommandType.Text;
-                    sqlCommand.CommandText = "DELETE FROM sessions WHERE sessionends < {fn NOW()};DELETE FROM sessions WHERE username=@USERNAME;INSERT INTO sessions(id_hash,username,ip,useragent,sessionstarts,sessionends) VALUES(@ID, @USERNAME, @IP, @USERAGENT, @SESSIONSTART, @SESSIONEND);";
+                    sqlCommand.CommandText = "DELETE FROM sessions WHERE sessionends < {fn NOW()};DELETE FROM sessions WHERE username=@USERNAME;INSERT INTO sessions(thumbprint,username,ip,useragent,sessionstarts,sessionends) VALUES(@ID, @USERNAME, @IP, @USERAGENT, @SESSIONSTART, @SESSIONEND);";
                     sqlCommand.Parameters.AddWithValue("@ID", newSessionID);
                     sqlCommand.Parameters.AddWithValue("@USERNAME", username);
                     sqlCommand.Parameters.AddWithValue("@IP", remoteIP);

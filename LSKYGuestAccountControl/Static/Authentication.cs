@@ -100,5 +100,77 @@ namespace LSKYGuestAccountControl.Static
 
             return returnme;
         }
+
+        public static List<string> GetValidUserGroups(string domain, string username)
+        {
+            List<string> validGroupMemberships = new List<string>();
+
+            // Get a list of groups
+            List<string> validGroupNames = Settings.SecurityGroupsAllowed;
+
+            foreach (string groupName in GetUsersGroups(domain, username))
+            {
+                foreach (string validGroupName in validGroupNames)
+                {
+                    if (string.Equals(groupName, validGroupName, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        validGroupMemberships.Add(validGroupName);
+                    }
+                }
+            }
+
+            return validGroupMemberships;
+        }
+
+        public static bool IsUserInAValidADGroup(string domain, string username)
+        {
+            return GetValidUserGroups(domain, username).Count > 0;
+        }
+
+        private static List<string> GetUsersGroups(string domain, string username)
+        {
+            List<string> returnMe = new List<string>();
+
+            using (PrincipalContext pc = new PrincipalContext(ContextType.Domain, domain))
+            {
+                using (UserPrincipal user = UserPrincipal.FindByIdentity(pc, username))
+                {
+                    if (user != null)
+                    {
+                        PrincipalSearchResult<Principal> groups = user.GetAuthorizationGroups();
+
+                        foreach (Principal p in groups)
+                        {
+                            if (p is GroupPrincipal)
+                            {
+                                returnMe.Add(p.SamAccountName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return returnMe;
+        }
+
+        private static List<string> GetADGroupMembers(string domain, string groupName)
+        {
+            List<string> returnMe = new List<string>();
+
+            using (PrincipalContext pc = new PrincipalContext(ContextType.Domain, domain))
+            {
+                using (GroupPrincipal grp = GroupPrincipal.FindByIdentity(pc, IdentityType.Name, groupName))
+                {
+                    if (grp != null)
+                    {
+                        foreach (Principal p in grp.GetMembers(true))
+                        {
+                            returnMe.Add(p.SamAccountName.ToLower());
+                        }
+                    }
+                }
+            }
+            return returnMe;
+        }
     }
 }

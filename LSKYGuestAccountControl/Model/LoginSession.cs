@@ -7,11 +7,11 @@ namespace LSKYGuestAccountControl.Model
 {
     public class LoginSession
     {
-        public string username { get; set; }
-        public string ip { get; set; }
-        public string hash { get; set; }
-        public string useragent { get; set; }
-        public DateTime starts { get; set; }
-        public DateTime ends { get; set; }
+        public string Username { get; set; }
+        public string IPAddress { get; set; }
+        public string Thumbprint { get; set; }
+        public string UserAgent { get; set; }
+        public DateTime SessionStarts { get; set; }
+        public DateTime SessionEnds { get; set; }
     }
 }
