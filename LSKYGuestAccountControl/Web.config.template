@@ -18,6 +18,7 @@
 
   <appSettings>
     <add key="allowed_ad_security_groups" value="" />
+    <add key="GuestAccountOU" value="" />
   </appSettings>
   
 </configuration>

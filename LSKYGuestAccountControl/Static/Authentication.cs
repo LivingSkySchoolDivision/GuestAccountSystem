@@ -8,6 +8,8 @@ namespace LSKYGuestAccountControl.Static
 {
     public static class Authentication
     {
+        static Random random = new Random();
+
         public static string GetServerName(HttpRequest Request)
         {
             return Request.ServerVariables["SERVER_NAME"].ToString().Trim();
@@ -171,6 +173,87 @@ namespace LSKYGuestAccountControl.Static
                 }
             }
             return returnMe;
+        }
+
+
+        
+
+        public static string GenerateGuestPassword()
+        {
+            List<string> adjectives = new List<string>()
+            {
+                "orange",
+                "bright",
+                "hello",
+                "alpha",
+                "bravo",
+                "charlie",
+                "delta",
+                "echo",
+                "foxtrot",
+                "hotel",
+                "india",
+                "juliet",
+                "mike",
+                "november",
+                "oscar",
+                "papa",
+                "romeo",
+                "sierra",
+                "tango",
+                "uniform",
+                "zulu",
+                "tomorrow",
+                "elephant",
+                "red",
+                "blue",
+                "green",
+                "purple",
+                "violet",
+                "grape",
+                "future",
+            };
+
+            List<string> nouns = new List<string>()
+            {
+                "basket",
+                "student",
+                "kitten",
+                "puppy",
+                "dragon",
+                "music",
+                "flower",
+                "forest",
+                "music",
+                "summer",
+                "winter",
+                "spring",
+                "autumn",
+                "weather",
+                "wagon",
+                "mountain",
+                "captain",
+                "chicken",
+                "circus",
+                "doctor",
+                "river",
+                "sky",
+                "ocean",
+                "sandwich",
+                "pizza",
+                "salad",
+                "picture",
+                "person",
+                "hat",
+                "violin",
+                "piano",
+                "telephone",
+                "banana",
+                "apple",
+                "soup"
+            };
+            
+            return adjectives[random.Next(adjectives.Count)] + nouns[random.Next(nouns.Count)];
         }
     }
 }

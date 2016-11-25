@@ -23,8 +23,10 @@ namespace LSKYGuestAccountControl
             }
         }
 
+        public static string GuestAccountOU = ConfigurationManager.AppSettings["GuestAccountOU"].Trim();
+
         public static string dbConnectionString_Internal = ConfigurationManager.ConnectionStrings["Internal"].ConnectionString;
-        
+
         public static string LoginURL { get { return "/Login/index.aspx"; } }
         public static string IndexURL { get { return "/index.aspx"; } }
 

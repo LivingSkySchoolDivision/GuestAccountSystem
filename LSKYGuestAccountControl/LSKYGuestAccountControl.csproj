@@ -103,8 +103,10 @@
     <Compile Include="Login\index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Model\GuestAccount.cs" />
     <Compile Include="Model\LoginSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\GuestAccountController.cs" />
     <Compile Include="Repositories\LoginSessionRepository.cs" />
     <Compile Include="Static\Settings.cs" />
     <Compile Include="Static\Authentication.cs" />
