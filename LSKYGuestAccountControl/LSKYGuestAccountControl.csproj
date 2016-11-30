@@ -68,9 +68,13 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="favicon.ico" />
+    <Content Include="Images\caution.jpg" />
+    <Content Include="CSS\Main.css" />
     <Content Include="index.aspx" />
-    <Content Include="lock.png" />
+    <Content Include="Images\lock.png" />
     <Content Include="Login\index.aspx" />
+    <Content Include="Images\logo_text.gif" />
     <Content Include="packages.config" />
     <Content Include="Template.Master" />
     <None Include="Properties\PublishProfiles\guests.lskysd.ca.pubxml" />

@@ -5,15 +5,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <link rel="stylesheet" href="~/Styles.css" /> 
-    <link rel="stylesheet" href="~/Normalize.css" /> 
-    <title>Guest Accounts</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+     
+    <title>LSKYSD Guest Accounts</title>
+    <link rel="stylesheet" href="CSS/Main.css"/>
+    <link rel='shortcut icon' href="/favicon.ico" type="image/x-icon" />
+
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
+    <div id="page_container">
         <asp:ContentPlaceHolder ID="pageBody" runat="server">
         
         </asp:ContentPlaceHolder>

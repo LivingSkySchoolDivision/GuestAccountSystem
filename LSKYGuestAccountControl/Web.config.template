@@ -17,8 +17,19 @@
   </system.codedom>
 
   <appSettings>
+    <!-- List of security groups to allow access - user must be in at least one of these groups to access the site -->
     <add key="allowed_ad_security_groups" value="" />
+    
+    <!-- OU of the guest accounts in AD -->
     <add key="GuestAccountOU" value="" />
+    
+    <!-- Username and password for user that has write access to guest accounts in Active Directory -->
+    <add key="ADUsername" value="" />
+    <add key="ADPassword" value="" />
+
+    <!-- How many guest accounts can a person requisition in a day -->
+    <add key="AllowedRequisitionsPerDay" value="3" />
+    
   </appSettings>
   
 </configuration>

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using LSKYGuestAccountControl.Model;
 using LSKYGuestAccountControl.Repositories;
 using LSKYGuestAccountControl.Static;
 
@@ -13,23 +15,85 @@ namespace LSKYGuestAccountControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            GuestAccountController repository = new GuestAccountController();
+            lblAllowedRequisitionsPerDay.Text = Settings.AllowedRequisitionsPerDay.ToString();
+            lblAllowedRequisitionsPerDay2.Text = Settings.AllowedRequisitionsPerDay.ToString();
 
-            for (int x = 0; x <= 100; x++)
+            if (!IsPostBack)
             {
-                Response.Write("<br>" + Authentication.GenerateGuestPassword());
+                tblControls.Visible = true;
+                tblIndexInstructions.Visible = true;
+                tblNewAccountInfo.Visible = false;
+                tblNewAccountInstructions.Visible = false;
             }
 
-            Response.Write("<BR><B>Available guest accounts</b>");
-            foreach (GuestAccount g in repository.GetAvailableGuestAccounts())
+            // Get the current user
+            LoginSessionRepository loginRepository = new LoginSessionRepository();
+            string foundUserSessionID = loginRepository.GetSessionIDFromCookies(Request);
+            LoginSession currentUser = null;
+            if (!string.IsNullOrEmpty(foundUserSessionID))
             {
-                Response.Write("<BR>" + g.DN);
+                // A cookie exists, lets see if it corresponds to a valid session ID
+                currentUser = loginRepository.LoadIfValid(foundUserSessionID,
+                    Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
             }
 
-            Response.Write("<BR><B>Active guest accounts</b>");
-            foreach (GuestAccount g in repository.GetActiveGuestAccounts())
+            if (currentUser != null)
             {
-                Response.Write("<BR>" + g.DN);
+                // Find any guest accounts that the logged in user has already requisitions
+                GuestAccountController guestRepo = new GuestAccountController();
+                List<GuestAccount> alreadyProvisionedGuestAccounts = guestRepo.GetActiveAccountsRequisitionedBy(currentUser);
+
+                if (alreadyProvisionedGuestAccounts.Count > 0)
+                {
+                    lblCount.Text = "<div class=\"already_active_text\">You have already activated " + alreadyProvisionedGuestAccounts.Count + " of a maximum of " + Settings.AllowedRequisitionsPerDay + " guest account(s) today</div>";
+                }
+
+                if (alreadyProvisionedGuestAccounts.Count >= Settings.AllowedRequisitionsPerDay)
+                {
+                    tblControls.Visible = false;
+                    tblNewAccountInfo.Visible = false;
+                    tblNewAccountInstructions.Visible = false;
+                    tblTooMany.Visible = true;
+                }
+
+            }
+            
+        }
+
+        private static int errorBorderWidth = 0;
+
+        protected void btnActivate_OnClick(object sender, EventArgs e)
+        {
+            // Get the current user
+            LoginSessionRepository loginRepository = new LoginSessionRepository();
+            string foundUserSessionID = loginRepository.GetSessionIDFromCookies(Request);
+            LoginSession currentUser = null;
+            if (!string.IsNullOrEmpty(foundUserSessionID))
+            {
+                // A cookie exists, lets see if it corresponds to a valid session ID
+                currentUser = loginRepository.LoadIfValid(foundUserSessionID,
+                    Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
+            }
+
+            if (currentUser != null)
+            {
+                // Check to make sure that they've enterd a reason
+                
+                GuestAccountController guestrepo = new GuestAccountController();
+
+                GuestAccount activatedAccount = guestrepo.RequisitionAccount(currentUser, txtReason.Text.Trim());
+
+                if (activatedAccount != null)
+                {
+                    lblUsername.Text = activatedAccount.sAMAccountName;
+                    lblPassword.Text = activatedAccount.Password;
+                    lblExpires.Text = DateTime.Today.AddDays(1).AddMinutes(-1).ToString();
+
+                    tblControls.Visible = false;
+                    tblIndexInstructions.Visible = false;
+                    tblNewAccountInfo.Visible = true;
+                    tblNewAccountInstructions.Visible = true;
+                }
             }
         }
     }

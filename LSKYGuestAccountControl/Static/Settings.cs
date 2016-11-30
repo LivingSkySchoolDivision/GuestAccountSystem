@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
+using LSKYGuestAccountControl.Static;
 
 namespace LSKYGuestAccountControl
 {
@@ -34,5 +35,9 @@ namespace LSKYGuestAccountControl
 
         public static string CookieName { get { return "LSKYSDGUESTCONTROL"; } }
         public static string Domain { get { return "LSKYSD.CA"; } }
+
+        public static string ADUsername = ConfigurationManager.AppSettings["ADUsername"].Trim();
+        public static string ADPassword = ConfigurationManager.AppSettings["ADPassword"].Trim();
+        public static int AllowedRequisitionsPerDay = Parsers.ParseInt(ConfigurationManager.AppSettings["AllowedRequisitionsPerDay"].Trim());
     }
 }
