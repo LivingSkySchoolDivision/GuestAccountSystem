@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
+using System.IO;
 using System.Linq;
 using System.Web;
 using LSKYGuestAccountControl.Model;
@@ -177,8 +178,9 @@ namespace LSKYGuestAccountControl.Repositories
 
         }
 
-        private void ActivateAccount(GuestAccount account, LoginSession currentUser)
+        private void ActivateAccount(GuestAccount account, LoginSession currentUser, string reason)
         {
+            
             DirectoryEntry DE = new DirectoryEntry("LDAP://" + account.DN, Settings.ADUsername, Settings.ADPassword);
 
             // Enable
@@ -199,6 +201,10 @@ namespace LSKYGuestAccountControl.Repositories
             DE.CommitChanges();
             DE.Close();
 
+            // Log this
+            LogRepository logrepository = new LogRepository();
+            logrepository.LogActivation(account, currentUser, reason);
+
         }
 
         public GuestAccount RequisitionAccount(LoginSession currentUser, string reason)
@@ -207,7 +213,7 @@ namespace LSKYGuestAccountControl.Repositories
 
             if (accountToActivate != null)
             {
-                ActivateAccount(accountToActivate, currentUser);
+                ActivateAccount(accountToActivate, currentUser, reason);
                 return accountToActivate;
             }
             
