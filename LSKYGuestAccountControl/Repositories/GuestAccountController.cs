@@ -195,9 +195,10 @@ namespace LSKYGuestAccountControl.Repositories
 
             // Set comment / description
             string comment = "Last activated by " + currentUser.Username + " on " + DateTime.Now.ToShortDateString() + " at " + DateTime.Now.ToShortTimeString() + " from IP " + currentUser.IPAddress;
-            DE.Properties["comment"].Value = comment;
             DE.Properties["description"].Value = comment;
-            
+
+            DE.Properties["comment"].Value = currentUser.Username;
+
             DE.CommitChanges();
             DE.Close();
 

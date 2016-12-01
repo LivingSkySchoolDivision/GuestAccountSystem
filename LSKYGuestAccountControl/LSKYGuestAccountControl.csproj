@@ -75,6 +75,7 @@
     <Content Include="Images\lock.png" />
     <Content Include="Login\index.aspx" />
     <Content Include="Images\logo_text.gif" />
+    <Content Include="Log\index.aspx" />
     <Content Include="packages.config" />
     <Content Include="Template.Master" />
     <None Include="Properties\PublishProfiles\guests.lskysd.ca.pubxml" />
@@ -105,6 +106,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Login\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Log\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Log\index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Model\GuestAccount.cs" />

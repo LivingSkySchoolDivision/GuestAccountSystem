@@ -13,5 +13,10 @@ namespace LSKYGuestAccountControl.Model
         public string Reason { get; set; }
         public string IPAddress { get; set; }
         public string UserAgent { get; set; }
+
+        public override string ToString()
+        {
+            return "{ LoggedActivation  Date:" + this.Date + ", Guest Account:" + this.GuestAccountName + ", Requesting User:" + this.RequestingUser + ", IP: " + this.IPAddress + ", Reason: " + this.Reason + " }";
+        }
     }
 }

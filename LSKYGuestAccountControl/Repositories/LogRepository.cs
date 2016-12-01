@@ -28,28 +28,29 @@ namespace LSKYGuestAccountControl.Repositories
         public List<LoggedActivation> GetRecentEntries(int max)
         {
             List<LoggedActivation> returnMe = new List<LoggedActivation>();
-
-            using (SqlConnection connection = new SqlConnection(Settings.dbConnectionString_Internal))
+            if (max > 0)
             {
-                SqlCommand sqlCommand = new SqlCommand
+                using (SqlConnection connection = new SqlConnection(Settings.dbConnectionString_Internal))
                 {
-                    Connection = connection,
-                    CommandType = CommandType.Text,
-                    CommandText = "SELECT * FROM log_activation;"
-                };
-                sqlCommand.Connection.Open();
-                SqlDataReader dataReader = sqlCommand.ExecuteReader();
-
-                if (dataReader.HasRows)
-                {
-                    while (dataReader.Read())
+                    SqlCommand sqlCommand = new SqlCommand
                     {
-                        returnMe.Add(dataReaderToLoggedActivation(dataReader));
-                    }
-                }
-                sqlCommand.Connection.Close();
-            }
+                        Connection = connection,
+                        CommandType = CommandType.Text,
+                        CommandText = "SELECT TOP " + max + " * FROM log_activation ORDER BY LogDate DESC;"
+                    };
+                    sqlCommand.Connection.Open();
+                    SqlDataReader dataReader = sqlCommand.ExecuteReader();
 
+                    if (dataReader.HasRows)
+                    {
+                        while (dataReader.Read())
+                        {
+                            returnMe.Add(dataReaderToLoggedActivation(dataReader));
+                        }
+                    }
+                    sqlCommand.Connection.Close();
+                }
+            }
             return returnMe;
         }
 
