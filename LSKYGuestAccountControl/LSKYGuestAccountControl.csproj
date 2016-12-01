@@ -73,6 +73,7 @@
     <Content Include="CSS\Main.css" />
     <Content Include="index.aspx" />
     <Content Include="Images\lock.png" />
+    <Content Include="JSON\index.aspx" />
     <Content Include="Login\index.aspx" />
     <Content Include="Images\logo_text.gif" />
     <Content Include="Log\index.aspx" />
@@ -99,6 +100,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JSON\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JSON\index.aspx.designer.cs">
       <DependentUpon>index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Login\index.aspx.cs">

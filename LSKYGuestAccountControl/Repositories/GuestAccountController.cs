@@ -146,6 +146,12 @@ namespace LSKYGuestAccountControl.Repositories
             RefreshCache();
         }
 
+        public List<GuestAccount> GetAllGuestAccounts()
+        {
+            RefreshCache();
+            return _cache.ToList();
+        }
+
         public List<GuestAccount> GetAvailableGuestAccounts()
         {
             RefreshCache();
