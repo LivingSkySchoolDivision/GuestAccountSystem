@@ -20,7 +20,7 @@ namespace LSKYGuestAccountControl.JSON
             Response.ContentEncoding = Encoding.UTF8;
             Response.ContentType = "application/json; charset=utf-8";
             Response.Write("{\n");
-            Response.Write("\"TotalGuestAccounts\" : \"" + allGuestAccounts.Count() + "\",\n");
+            Response.Write("\"TotalGuestAccounts\" : " + allGuestAccounts.Count() + ",\n");
             Response.Write("\"TotalActive\" : " + allGuestAccounts.Count(g => g.IsEnabled) + ",\n");
             Response.Write("\"TotalAvailable\" : " + allGuestAccounts.Count(g => !g.IsEnabled) + ",\n");
             Response.Write("\"Active\": [\n");
