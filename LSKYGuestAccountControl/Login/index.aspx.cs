@@ -90,6 +90,9 @@ namespace LSKYGuestAccountControl.Login
                                 // Create a cookie with the user's shiny new session ID
                                 createCookie(newSessionID);
 
+                                // Wait a few seconds
+                                System.Threading.Thread.Sleep(1000 * 3);
+
                                 // Redirect to the front page
                                 tblAlreadyLoggedIn.Visible = true;
                                 tblLoginform.Visible = false;
