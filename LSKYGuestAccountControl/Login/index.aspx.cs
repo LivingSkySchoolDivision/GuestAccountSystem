@@ -77,13 +77,15 @@ namespace LSKYGuestAccountControl.Login
                     // Check if the password is complex enough
                     if (Authentication.IsPasswordStrongEnough(password))
                     {
-                        // Check if the user is a member of a required group
-                        if (Authentication.IsUserInAValidADGroup(Settings.Domain, username))
-                        {
-                            LoginSessionRepository loginSessionRepo = new LoginSessionRepository();
+                        // Check the user's permissions
+                        UserPermissionResponse permissions = Authentication.GetUserPermissions(Settings.Domain, username);
 
+                        // Check if the user is a member of a required group
+                        if (permissions.CanUserUseSystem)
+                        {
                             // Attempt to create a session for the user
-                            string newSessionID = loginSessionRepo.CreateSession(username, Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
+                            LoginSessionRepository loginSessionRepo = new LoginSessionRepository();
+                            string newSessionID = loginSessionRepo.CreateSession(username, permissions, Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
 
                             if (newSessionID != string.Empty)
                             {

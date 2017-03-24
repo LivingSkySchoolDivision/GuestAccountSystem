@@ -79,6 +79,8 @@
     <Content Include="Log\index.aspx" />
     <Content Include="packages.config" />
     <Content Include="Template.Master" />
+    <Content Include="batch\BatchInfo.aspx" />
+    <Content Include="batch\index.aspx" />
     <None Include="Properties\PublishProfiles\guests.lskysd.ca.pubxml" />
     <None Include="Web.config.Debug.template">
       <DependentUpon>Web.config.template</DependentUpon>
@@ -126,6 +128,7 @@
     <Compile Include="Model\GuestAccount.cs" />
     <Compile Include="Model\LoggedActivation.cs" />
     <Compile Include="Model\LoginSession.cs" />
+    <Compile Include="Model\UserPermissionResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\GuestAccountController.cs" />
     <Compile Include="Repositories\LoginSessionRepository.cs" />
@@ -141,6 +144,20 @@
     </Compile>
     <Compile Include="Template.Master.designer.cs">
       <DependentUpon>Template.Master</DependentUpon>
+    </Compile>
+    <Compile Include="batch\BatchInfo.aspx.cs">
+      <DependentUpon>BatchInfo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="batch\BatchInfo.aspx.designer.cs">
+      <DependentUpon>BatchInfo.aspx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="batch\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="batch\index.aspx.designer.cs">
+      <DependentUpon>index.aspx.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup />

@@ -20,10 +20,75 @@ namespace LSKYGuestAccountControl.Repositories
                 RequestingUser = dataReader["RequestingUser"].ToString(),
                 Reason = dataReader["Reason"].ToString(),
                 IPAddress = dataReader["IPAddress"].ToString(),
-                UserAgent = dataReader["UserAgent"].ToString()
+                UserAgent = dataReader["UserAgent"].ToString(),
+                BatchID = dataReader["batchid"].ToString(),
+                Password = dataReader["password"].ToString()
             };
         }
+        public List<LoggedActivation> GetBatchID(string batchID)
+        {
+            List<LoggedActivation> returnMe = new List<LoggedActivation>();
+            if (!string.IsNullOrEmpty(batchID))
+            {
+                using (SqlConnection connection = new SqlConnection(Settings.dbConnectionString_Internal))
+                {
+                    SqlCommand sqlCommand = new SqlCommand
+                    {
+                        Connection = connection,
+                        CommandType = CommandType.Text,
+                        CommandText = "SELECT * FROM log_activation WHERE batchid=@BATCHID ORDER BY LogDate DESC;"
+                    };
+                    sqlCommand.Parameters.AddWithValue("@BATCHID", batchID);
+                    sqlCommand.Connection.Open();
+                    SqlDataReader dataReader = sqlCommand.ExecuteReader();
 
+                    if (dataReader.HasRows)
+                    {
+                        while (dataReader.Read())
+                        {
+                            returnMe.Add(dataReaderToLoggedActivation(dataReader));
+                        }
+                    }
+                    sqlCommand.Connection.Close();
+                }
+            }
+            return returnMe;
+        }
+        public List<LoggedActivation> GetActivationsToday(LoginSession currentUser)
+        {
+            // Date range is always today
+            DateTime startDate = DateTime.Today;
+            DateTime endDate = DateTime.Today.AddDays(1).AddMinutes(-1);
+
+            List<LoggedActivation> returnMe = new List<LoggedActivation>();
+            if (currentUser != null)
+            {
+                using (SqlConnection connection = new SqlConnection(Settings.dbConnectionString_Internal))
+                {
+                    SqlCommand sqlCommand = new SqlCommand
+                    {
+                        Connection = connection,
+                        CommandType = CommandType.Text,
+                        CommandText = "SELECT * FROM log_activation WHERE RequestingUser=@RUSER AND LogDate>=@STARDATE AND LogDate<=@ENDDATE ORDER BY LogDate DESC;"
+                    };
+                    sqlCommand.Parameters.AddWithValue("@RUSER", currentUser.Username);
+                    sqlCommand.Parameters.AddWithValue("@STARDATE", startDate);
+                    sqlCommand.Parameters.AddWithValue("@ENDDATE", endDate);
+                    sqlCommand.Connection.Open();
+                    SqlDataReader dataReader = sqlCommand.ExecuteReader();
+
+                    if (dataReader.HasRows)
+                    {
+                        while (dataReader.Read())
+                        {
+                            returnMe.Add(dataReaderToLoggedActivation(dataReader));
+                        }
+                    }
+                    sqlCommand.Connection.Close();
+                }
+            }
+            return returnMe;
+        }
 
         public List<LoggedActivation> GetRecentEntries(int max)
         {
@@ -53,8 +118,8 @@ namespace LSKYGuestAccountControl.Repositories
             }
             return returnMe;
         }
-
-        public void LogActivation(GuestAccount guestAccount, LoginSession currentUser, string reason)
+        
+        public void LogActivation(string batchID, GuestAccount guestAccount, LoginSession currentUser, string reason)
         {
             using (SqlConnection connection = new SqlConnection(Settings.dbConnectionString_Internal))
             {
@@ -62,8 +127,8 @@ namespace LSKYGuestAccountControl.Repositories
                 {
                     Connection = connection,
                     CommandType = CommandType.Text,
-                    CommandText = "INSERT INTO log_activation(LogDate, GuestAccountName, RequestingUser, Reason, IPAddress, UserAgent) " +
-                                  "                    VALUES(@LOGDATE, @GUESTNAME, @REQUSER, @REASON, @IPADDR, @USERAGENT);"
+                    CommandText = "INSERT INTO log_activation(LogDate, GuestAccountName, RequestingUser, Reason, IPAddress, UserAgent, Password, batchid) " +
+                                  "                    VALUES(@LOGDATE, @GUESTNAME, @REQUSER, @REASON, @IPADDR, @USERAGENT, @PASSWD, @BATCHID);"
                 })
                 {
                     sqlCommand.Parameters.AddWithValue("@LOGDATE", DateTime.Now.ToString());
@@ -72,6 +137,8 @@ namespace LSKYGuestAccountControl.Repositories
                     sqlCommand.Parameters.AddWithValue("@REASON", reason);
                     sqlCommand.Parameters.AddWithValue("@IPADDR", currentUser.IPAddress);
                     sqlCommand.Parameters.AddWithValue("@USERAGENT", currentUser.UserAgent);
+                    sqlCommand.Parameters.AddWithValue("@PASSWD", guestAccount.Password);
+                    sqlCommand.Parameters.AddWithValue("@BATCHID", batchID);
 
                     sqlCommand.Connection.Open();
                     sqlCommand.ExecuteNonQuery();

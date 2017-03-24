@@ -16,6 +16,7 @@ namespace LSKYGuestAccountControl
         public string Description { get; set; }
         public bool IsEnabled { get; set; }
         public bool IsExpired { get; set; }
+        public bool Expires { get; set; }
         public string Password { get; set; }
 
         public override string ToString()

@@ -20,7 +20,10 @@ namespace LSKYGuestAccountControl.Repositories
                 Thumbprint = dataReader["thumbprint"].ToString(),
                 UserAgent = dataReader["useragent"].ToString(),
                 SessionStarts = DateTime.Parse(dataReader["sessionstarts"].ToString()),
-                SessionEnds = DateTime.Parse(dataReader["sessionends"].ToString())
+                SessionEnds = DateTime.Parse(dataReader["sessionends"].ToString()),
+                CanBypassLimits = Parsers.ParseBool(dataReader["can_bypass_limits"].ToString().Trim()),
+                CanUseBatches = Parsers.ParseBool(dataReader["can_create_batches"].ToString().Trim()),
+                CanViewLogs = Parsers.ParseBool(dataReader["can_view_logs"].ToString().Trim())
             };
         }
 
@@ -175,7 +178,7 @@ namespace LSKYGuestAccountControl.Repositories
         /// <param name="remoteIP"></param>
         /// <param name="useragent"></param>
         /// <returns></returns>
-        public string CreateSession(string username, string remoteIP, string useragent)
+        public string CreateSession(string username, UserPermissionResponse permissions, string remoteIP, string useragent)
         {
             // Generate a session ID
             string newSessionID = CreateSessionID(username + remoteIP + useragent);
@@ -194,7 +197,7 @@ namespace LSKYGuestAccountControl.Repositories
                 {
                     sqlCommand.Connection = connection;
                     sqlCommand.CommandType = CommandType.Text;
-                    sqlCommand.CommandText = "DELETE FROM sessions WHERE sessionends < {fn NOW()};DELETE FROM sessions WHERE username=@USERNAME;INSERT INTO sessions(thumbprint,username,ip,useragent,sessionstarts,sessionends) VALUES(@ID, @USERNAME, @IP, @USERAGENT, @SESSIONSTART, @SESSIONEND);";
+                    sqlCommand.CommandText = "DELETE FROM sessions WHERE sessionends < {fn NOW()};DELETE FROM sessions WHERE username=@USERNAME;INSERT INTO sessions(thumbprint,username,ip,useragent,sessionstarts,sessionends, can_bypass_limits, can_create_batches, can_view_logs) VALUES(@ID, @USERNAME, @IP, @USERAGENT, @SESSIONSTART, @SESSIONEND, @CANBYPASSLIMITS, @CANCREATEBATCHES, @CANVIEWLOGS);";
                     sqlCommand.Parameters.AddWithValue("@ID", newSessionID);
                     sqlCommand.Parameters.AddWithValue("@USERNAME", username);
                     sqlCommand.Parameters.AddWithValue("@IP", remoteIP);
@@ -202,6 +205,10 @@ namespace LSKYGuestAccountControl.Repositories
                     sqlCommand.Parameters.AddWithValue("@SESSIONSTART", DateTime.Now);
                     sqlCommand.Parameters.AddWithValue("@SESSIONEND", DateTime.Now.Add(sessionDuration));
 
+                    sqlCommand.Parameters.AddWithValue("@CANBYPASSLIMITS", permissions.CanUserBypassLimits);
+                    sqlCommand.Parameters.AddWithValue("@CANCREATEBATCHES", permissions.CanUserCreateBatches);
+                    sqlCommand.Parameters.AddWithValue("@CANVIEWLOGS", permissions.CanUserViewLog);
+                    
                     sqlCommand.Connection.Open();
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Connection.Close();

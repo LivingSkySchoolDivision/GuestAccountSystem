@@ -13,6 +13,24 @@ namespace LSKYGuestAccountControl.Log
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            LoginSessionRepository loginRepository = new LoginSessionRepository();
+            string foundUserSessionID = loginRepository.GetSessionIDFromCookies(Request);
+            LoginSession currentUser = null;
+            if (!string.IsNullOrEmpty(foundUserSessionID))
+            {
+                // A cookie exists, lets see if it corresponds to a valid session ID
+                currentUser = loginRepository.LoadIfValid(foundUserSessionID,
+                    Request.ServerVariables["REMOTE_ADDR"], Request.ServerVariables["HTTP_USER_AGENT"]);
+            }
+
+            if (currentUser != null)
+            {
+                if (!currentUser.CanViewLogs)
+                {
+                    redirectToIndex();
+                }
+            }
+
             if (!IsPostBack)
             {
                 LogRepository logRepository = new LogRepository();
@@ -25,6 +43,17 @@ namespace LSKYGuestAccountControl.Log
                     tblLog.Rows.Add(addLogEntry(entry));
                 }
             }
+        }
+
+        public void redirectToIndex()
+        {
+            string IndexURL = Request.Url.GetLeftPart(UriPartial.Authority) + HttpContext.Current.Request.ApplicationPath + Settings.IndexURL;
+            Response.Clear();
+            Response.Write("<html>");
+            Response.Write("<meta http-equiv=\"refresh\" content=\"0; url=" + IndexURL + "\">");
+            Response.Write("<div style=\"padding: 5px; text-align: center; font-size: 10pt; font-family: sans-serif;\">You do not have access to this page... redirecting... <a href=\"" + IndexURL + "\">Click here if you are not redirected automatically</a></div>");
+            Response.Write("</html>");
+            Response.End();
         }
 
         private TableHeaderRow addTableHeadings()

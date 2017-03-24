@@ -48,7 +48,7 @@ namespace LSKYGuestAccountControl
                     lblCount.Text = "<div class=\"already_active_text\">You have already activated " + alreadyProvisionedGuestAccounts.Count + " of a maximum of " + Settings.AllowedRequisitionsPerDay + " guest account(s) today</div>";
                 }
 
-                if (alreadyProvisionedGuestAccounts.Count >= Settings.AllowedRequisitionsPerDay)
+                if ((alreadyProvisionedGuestAccounts.Count >= Settings.AllowedRequisitionsPerDay) && (!currentUser.CanBypassLimits))
                 {
                     tblControls.Visible = false;
                     tblNewAccountInfo.Visible = false;
@@ -56,8 +56,57 @@ namespace LSKYGuestAccountControl
                     tblTooMany.Visible = true;
                 }
 
+                if (alreadyProvisionedGuestAccounts.Count > 0)
+                {
+                    tblActiveAccounts.Visible = true;
+                    tblActiveAccounts.Rows.Clear();
+                    tblActiveAccounts.Rows.Add(alreadyActiveHeadings());
+                    LogRepository logRepo = new LogRepository();
+                    List<LoggedActivation> provisionedAccounts = logRepo.GetActivationsToday(currentUser);
+
+                    // Make a list of active usernames that we can compare to
+                    List<string> activeUsernames = alreadyProvisionedGuestAccounts.Select(g => g.sAMAccountName).ToList();
+                    List<string> alreadyDisplayed = new List<string>();
+                    foreach (LoggedActivation guest in provisionedAccounts.OrderByDescending(g => g.Date))
+                    {
+                        if (activeUsernames.Contains(guest.GuestAccountName))
+                        {
+                            if (!alreadyDisplayed.Contains(guest.GuestAccountName))
+                            {
+                                alreadyDisplayed.Add(guest.GuestAccountName);
+                                tblActiveAccounts.Rows.Add(alreadyActiveRow(guest));
+                            }
+                        }
+                    }
+                }
+
             }
             
+        }
+
+        private TableHeaderRow alreadyActiveHeadings()
+        {
+            TableHeaderRow newRow = new TableHeaderRow();
+            
+            newRow.Cells.Add(new TableHeaderCell() { Text = "Username" });
+            newRow.Cells.Add(new TableHeaderCell() { Text = "Password" });
+            newRow.Cells.Add(new TableHeaderCell() { Text = "Reason" });
+            newRow.Cells.Add(new TableHeaderCell() { Text = "Expires" });
+
+            return newRow;
+        }
+
+        private TableRow alreadyActiveRow(LoggedActivation guest)
+        {
+            TableRow newRow = new TableRow();
+            
+            newRow.Cells.Add(new TableCell() { Text = guest.GuestAccountName });
+            newRow.Cells.Add(new TableCell() { Text = guest.Password });
+            newRow.Cells.Add(new TableCell() { Text = guest.Reason });
+            string expiresString = DateTime.Today.AddDays(1).AddMinutes(-1).ToString();
+            newRow.Cells.Add(new TableCell() { Text = expiresString });
+
+            return newRow;
         }
 
         private static int errorBorderWidth = 0;
@@ -93,6 +142,7 @@ namespace LSKYGuestAccountControl
                     tblIndexInstructions.Visible = false;
                     tblNewAccountInfo.Visible = true;
                     tblNewAccountInstructions.Visible = true;
+                    tblActiveAccounts.Visible = false;
                 }
             }
         }

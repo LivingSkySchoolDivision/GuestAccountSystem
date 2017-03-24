@@ -25,11 +25,6 @@
                         <li>If you have trouble getting your guest account to work, please consider making a <a href="https://helpdesk.lskysd.ca">Help Desk ticket</a>.</li>
                     </ul>
                 </p>
-                <p>
-                    <b>What if I've forgotten the username/password of a guest account?</b>
-                    <br/>
-                    If you've lost the username/password of an account you've already created earlier in the day, just activate a new one and forget the old one - they'll both self-destruct at the end of the day. 
-                </p>
                 <br/><br/>
             </asp:TableCell>
         </asp:TableRow>
@@ -100,6 +95,12 @@
             </asp:TableCell>
         </asp:TableRow>
     </asp:Table>
+    <br/><br/>
+    <asp:Table ID="tblActiveAccounts" runat="server" Visible="False" Width="100%"></asp:Table>
     
+    <br/><br/>
+    <br/><br/>
+    <br/><br/>
+    <br/><br/>
 
 </asp:Content>

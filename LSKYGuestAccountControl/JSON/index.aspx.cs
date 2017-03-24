@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using LSKYGuestAccountControl.ExtensionMethods;
 using LSKYGuestAccountControl.Repositories;
 
 namespace LSKYGuestAccountControl.JSON
@@ -22,6 +23,7 @@ namespace LSKYGuestAccountControl.JSON
             Response.Write("{\n");
             Response.Write("\"TotalGuestAccounts\" : " + allGuestAccounts.Count() + ",\n");
             Response.Write("\"TotalActive\" : " + allGuestAccounts.Count(g => g.IsEnabled) + ",\n");
+            Response.Write("\"ActiveAndDontExpire\" : " + allGuestAccounts.Count(g => g.IsEnabled && !g.Expires) + ",\n");
             Response.Write("\"TotalAvailable\" : " + allGuestAccounts.Count(g => !g.IsEnabled) + ",\n");
             Response.Write("\"Active\": [\n");
 
@@ -30,7 +32,8 @@ namespace LSKYGuestAccountControl.JSON
             {
                 Response.Write("{\n");
                 Response.Write("\"UserName\": \"" + guest.sAMAccountName + "\",\n");
-                Response.Write("\"RequestedBy\": \"" + guest.Comment + "\"\n");
+                Response.Write("\"RequestedBy\": \"" + guest.Comment + "\",\n");
+                Response.Write("\"Expires\": \"" + guest.Expires.ToYesOrNo() + "\"\n");
                 Response.Write("}\n");
                 counter++;
                 if (counter < allGuestAccounts.Count(g => g.IsEnabled))

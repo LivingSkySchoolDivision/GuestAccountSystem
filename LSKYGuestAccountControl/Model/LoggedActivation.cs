@@ -13,6 +13,8 @@ namespace LSKYGuestAccountControl.Model
         public string Reason { get; set; }
         public string IPAddress { get; set; }
         public string UserAgent { get; set; }
+        public string Password { get; set; }
+        public string BatchID { get; set; }
 
         public override string ToString()
         {

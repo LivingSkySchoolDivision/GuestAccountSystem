@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Web;
+using LSKYGuestAccountControl.ExtensionMethods;
+using LSKYGuestAccountControl.Model;
 
 namespace LSKYGuestAccountControl.Static
 {
@@ -103,32 +105,78 @@ namespace LSKYGuestAccountControl.Static
             return returnme;
         }
 
-        public static List<string> GetValidUserGroups(string domain, string username)
+        public static UserPermissionResponse GetUserPermissions(string domain, string username)
         {
-            List<string> validGroupMemberships = new List<string>();
+            bool canLogin = false;
+            bool canBypassLimits = false;
+            bool canUseBatches = false;
+            bool canViewLog = false;
 
-            // Get a list of groups
-            List<string> validGroupNames = Settings.SecurityGroupsAllowed;
-
-            foreach (string groupName in GetUsersGroups(domain, username))
+            List<string> usersGroupMembership = GetUsersGroups(domain, username);
+            
+            // Check if the user can even log in first
+            foreach (string group in Settings.SecurityGroupsAllowed)
             {
-                foreach (string validGroupName in validGroupNames)
+                if (usersGroupMembership.Contains(group))
                 {
-                    if (string.Equals(groupName, validGroupName, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        validGroupMemberships.Add(validGroupName);
-                    }
+                    canLogin = true;
                 }
             }
 
-            return validGroupMemberships;
-        }
+            // If the user can't login at this point, don't even bother checking any further
+            if (!canLogin)
+            {
+                return new UserPermissionResponse()
+                {
+                    CanUserUseSystem = false,
+                    CanUserBypassLimits = false,
+                    CanUserCreateBatches = false,
+                    CanUserViewLog = false
+                };
+            }
 
-        public static bool IsUserInAValidADGroup(string domain, string username)
-        {
-            return GetValidUserGroups(domain, username).Count > 0;
-        }
+            // Check if the user can bypass limits
+            foreach (string group in Settings.SecurityGroupsBypassLimits)
+            {
+                if (usersGroupMembership.Contains(group))
+                {
+                    canBypassLimits = true;
+                }
+            }
 
+            // Check if the user can use batches
+            foreach (string group in Settings.SecurityGroupsAllowedToMakeBatches)
+            {
+                if (usersGroupMembership.Contains(group))
+                {
+                    canUseBatches = true;
+                }
+            }
+
+            // Check if the user can view logs
+            foreach (string group in Settings.SecurityGroupsViewLog)
+            {
+                if (usersGroupMembership.Contains(group))
+                {
+                    canViewLog = true;
+                }
+            }
+
+            return new UserPermissionResponse()
+            {
+                CanUserUseSystem = canLogin,
+                CanUserBypassLimits = canBypassLimits,
+                CanUserCreateBatches = canUseBatches,
+                CanUserViewLog = canViewLog
+            };
+        }
+        
+        /// <summary>
+        /// Returns a list of AD groups a user is a member of
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         private static List<string> GetUsersGroups(string domain, string username)
         {
             List<string> returnMe = new List<string>();
@@ -145,7 +193,7 @@ namespace LSKYGuestAccountControl.Static
                         {
                             if (p is GroupPrincipal)
                             {
-                                returnMe.Add(p.SamAccountName);
+                                returnMe.Add(p.SamAccountName.ToLower());
                             }
                         }
                     }
@@ -155,6 +203,12 @@ namespace LSKYGuestAccountControl.Static
             return returnMe;
         }
 
+        /// <summary>
+        /// Returns a list of an AD group's members
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
         private static List<string> GetADGroupMembers(string domain, string groupName)
         {
             List<string> returnMe = new List<string>();
@@ -174,10 +228,6 @@ namespace LSKYGuestAccountControl.Static
             }
             return returnMe;
         }
-
-
-        
-
         public static string GenerateGuestPassword()
         {
             List<string> adjectives = new List<string>()

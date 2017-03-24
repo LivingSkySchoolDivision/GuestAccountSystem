@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.DirectoryServices;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using LSKYGuestAccountControl.Model;
 using LSKYGuestAccountControl.Static;
@@ -33,9 +34,10 @@ namespace LSKYGuestAccountControl.Repositories
                 searcher.PropertiesToLoad.Add("employeeID");
                 searcher.PropertiesToLoad.Add("userAccountControl");
                 searcher.PropertiesToLoad.Add("description");
+                searcher.PropertiesToLoad.Add("title");
 
                 // This scope returns all users in the given OU, and child OUs
-                searcher.SearchScope = SearchScope.Subtree;
+                searcher.SearchScope = SearchScope.OneLevel;
 
                 // This scope returns just users in the given OU
                 //searcher.SearchScope = SearchScope.OneLevel;
@@ -109,6 +111,17 @@ namespace LSKYGuestAccountControl.Repositories
                     }
                     #endregion
 
+                    #region Title / Expires
+                    bool expires = true;
+                    if (child.Properties.Contains("title"))
+                    {
+                        if (!string.IsNullOrEmpty(child.Properties["title"].Value.ToString()))
+                        {
+                            expires = false;
+                        }
+                    }
+                    #endregion
+
                     #region userAccountControl
                     bool Enabled;
                     int userAccountControl = Convert.ToInt32(child.Properties["userAccountControl"][0]);
@@ -125,6 +138,7 @@ namespace LSKYGuestAccountControl.Repositories
                         Comment = Comment,
                         Description = Description,
                         IsEnabled = Enabled,
+                        Expires = expires
                     };
 
                     _cache.Add(guestAccount);
@@ -181,12 +195,15 @@ namespace LSKYGuestAccountControl.Repositories
             {
                 return null;
             }
-
         }
 
-        private void ActivateAccount(GuestAccount account, LoginSession currentUser, string reason)
+        private string GetBatchID()
         {
-            
+            return Crypto.GetMD5(DateTime.Now.ToString());
+        }
+
+        private void ActivateAccount(GuestAccount account, LoginSession currentUser, string reason, string batchID)
+        {
             DirectoryEntry DE = new DirectoryEntry("LDAP://" + account.DN, Settings.ADUsername, Settings.ADPassword);
 
             // Enable
@@ -208,9 +225,14 @@ namespace LSKYGuestAccountControl.Repositories
             DE.CommitChanges();
             DE.Close();
 
+            // Update our internal list to save having to reload for this information
+            account.IsEnabled = true;
+            account.LastActivated = DateTime.Now;
+            account.Comment = currentUser.Username;
+
             // Log this
             LogRepository logrepository = new LogRepository();
-            logrepository.LogActivation(account, currentUser, reason);
+            logrepository.LogActivation(batchID, account, currentUser, reason);
 
         }
 
@@ -220,11 +242,35 @@ namespace LSKYGuestAccountControl.Repositories
 
             if (accountToActivate != null)
             {
-                ActivateAccount(accountToActivate, currentUser, reason);
+                ActivateAccount(accountToActivate, currentUser, reason, GetBatchID());
                 return accountToActivate;
             }
             
             throw new Exception("No guest accounts left to activate!");
+        }
+
+        public string RequisitionBatch(LoginSession currentUser, string reason, int count)
+        {
+            // Check to make sure we have enough accounts
+            if (count > GetAvailableGuestAccounts().Count())
+            {
+                throw new Exception("Request to activate " + count + " accounts, but only " + GetAvailableGuestAccounts().Count() + " are available");
+            }
+            string batchID = GetBatchID();
+
+            List <GuestAccount> batch = new List<GuestAccount>();
+
+            for (int x = 0; x < count; x++)
+            {
+                GuestAccount accountToActivate = GetRandomAvailableGuestAccount();
+                if (accountToActivate != null)
+                {
+                    ActivateAccount(accountToActivate, currentUser, reason, batchID);
+                    batch.Add(accountToActivate);
+                }
+            }
+
+            return batchID;
         }
 
     }

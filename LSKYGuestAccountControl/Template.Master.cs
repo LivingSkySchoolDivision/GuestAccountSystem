@@ -79,7 +79,6 @@ namespace LSKYGuestAccountControl
             else
             {
                 Response.Write("<!-- Logged in: " + currentUser.Username + " -->");
-                Response.Write("<!-- Is in valid group: " + Authentication.GetValidUserGroups(Settings.Domain, currentUser.Username).ToCommaSeparatedString() + "-->");
             }
 
         }
