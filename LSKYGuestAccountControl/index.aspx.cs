@@ -39,6 +39,23 @@ namespace LSKYGuestAccountControl
 
             if (currentUser != null)
             {
+                if (currentUser.CanUseBatches)
+                {
+                    tblCellBatch.Visible = true;
+
+                } else
+                {
+                    tblCellBatch.Visible = false;
+                }
+
+                if (currentUser.CanViewLogs)
+                {
+                    tblCellLog.Visible = true;
+                } else
+                {
+                    tblCellLog.Visible = false;
+                }
+
                 // Find any guest accounts that the logged in user has already requisitions
                 GuestAccountController guestRepo = new GuestAccountController();
                 List<GuestAccount> alreadyProvisionedGuestAccounts = guestRepo.GetActiveAccountsRequisitionedBy(currentUser);

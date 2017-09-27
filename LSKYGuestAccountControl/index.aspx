@@ -9,7 +9,7 @@
     
     <asp:Table ID="tblIndexInstructions" runat="server" Visible="True">
         <asp:TableRow>
-            <asp:TableCell>
+            <asp:TableCell colspan="2">
                 <h1>Activate a guest account</h1>
                 <p>Guest accounts are temporary accounts that will automatically self-destruct at the end of the day.</p>
                 <p>
@@ -25,10 +25,22 @@
                         <li>If you have trouble getting your guest account to work, please consider making a <a href="https://helpdesk.lskysd.ca">Help Desk ticket</a>.</li>
                     </ul>
                 </p>
-                <br/><br/>
+            </asp:TableCell>
+        </asp:TableRow>
+        <asp:TableRow>
+            <asp:TableCell Width="50%" HorizontalAlign="Center">                
+                <asp:Literal ID="tblCellBatch" runat="server">
+                    <b>Batch users</b><br/><a href="/batch">Click here to create multiple guest accounts at a time</a>.
+                </asp:Literal>
+            </asp:TableCell>            
+            <asp:TableCell Width="50%" HorizontalAlign="Center">
+                <asp:Literal ID="tblCellLog" runat="server">
+                    <b>Log</b><br/><a href="/log">Click here to view the log</a>.
+                </asp:Literal>
             </asp:TableCell>
         </asp:TableRow>
     </asp:Table>
+    <br /><br />
 
     <asp:Table ID="tblControls" CssClass="control_table" runat="server" Visible="True">
         <asp:TableRow>
