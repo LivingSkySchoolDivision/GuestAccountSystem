@@ -25,6 +25,7 @@
                         <li>If you have trouble getting your guest account to work, please consider making a <a href="https://helpdesk.lskysd.ca">Help Desk ticket</a>.</li>
                     </ul>
                 </p>
+                <a href="/Password/">Click here to just generate a random password.</a>
             </asp:TableCell>
         </asp:TableRow>
         <asp:TableRow>

@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,6 +79,7 @@
     <Content Include="Images\logo_text.gif" />
     <Content Include="Log\index.aspx" />
     <Content Include="packages.config" />
+    <Content Include="Password\index.aspx" />
     <Content Include="Template.Master" />
     <Content Include="batch\BatchInfo.aspx" />
     <Content Include="batch\index.aspx" />
@@ -129,6 +131,13 @@
     <Compile Include="Model\LoggedActivation.cs" />
     <Compile Include="Model\LoginSession.cs" />
     <Compile Include="Model\UserPermissionResponse.cs" />
+    <Compile Include="Password\index.aspx.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Password\index.aspx.designer.cs">
+      <DependentUpon>index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\GuestAccountController.cs" />
     <Compile Include="Repositories\LoginSessionRepository.cs" />
@@ -172,7 +181,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>11900</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

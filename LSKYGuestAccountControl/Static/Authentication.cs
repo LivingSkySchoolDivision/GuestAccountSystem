@@ -293,7 +293,45 @@ namespace LSKYGuestAccountControl.Static
                 "pizza",
                 "space",
                 "radioactive",
-
+                "angry",
+                "lazy",
+                "important",
+                "odd",
+                "rich",
+                "better",
+                "easy",
+                "grumpy",
+                "clumsy",
+                "round",
+                "skinny",
+                "large",
+                "small",
+                "thundering",
+                "whispering",
+                "ancient",
+                "modern",
+                "swift",
+                "young",
+                "old",
+                "bitter",
+                "wooden",
+                "glowing",
+                "fluffy",
+                "empty",
+                "sparse",
+                "abundant",
+                "magnificent",
+                "plain",
+                "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight",
+                "nine",
+                "ten"
             };
 
             List<string> nouns = new List<string>()
@@ -342,9 +380,58 @@ namespace LSKYGuestAccountControl.Static
                 "cake",
                 "lemon",
                 "cookie",
+                "elbow",
+                "jam",
+                "airplane",
+                "lettuce",
+                "tractor",
+                "custard",
+                "television",
+                "tablecloth",
+                "chocolate",
+                "shadow",
+                "cupcake",
+                "book",
+                "bookcase",
+                "rocket",
+                "waterfall",
+                "coldness",
+                "friendship",
+                "rabbit",
+                "moon",
+                "pencil",
+                "computer",
+                "newspaper",
+                "duck",
+                "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight",
+                "ten",
+                "fishbowl",
+                "catfish",
+                "rainbow",
+                "oatmeal",
+                "notebook",
+                "grapefruit",
+                "firefly",
+                "dishwasher",
+                "baseball"
             };
-            
-            return adjectives[random.Next(adjectives.Count)] + "-" + nouns[random.Next(nouns.Count)];
+
+            string newPassword = adjectives[random.Next(adjectives.Count)] + "-" + nouns[random.Next(nouns.Count)];
+
+
+            //if (newPassword.Length < 10)
+            //{
+            //    newPassword += "-" + random.Next(10, 99);
+            //}
+
+            return newPassword;
         }
     }
 }

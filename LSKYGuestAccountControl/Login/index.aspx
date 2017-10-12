@@ -25,6 +25,7 @@
             <li><a href="https://helpdesk.lskysd.ca">Help desk staff</a></li>
         </ul>
     </p>
+    <p><a href="/Password/">Click here to just generate a random password.</a></p>
     <br/><br/>
     <asp:Table ID="tblAlreadyLoggedIn" runat="server" HorizontalAlign="Center" Visible="false">
         <asp:TableRow>
