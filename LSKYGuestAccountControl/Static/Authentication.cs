@@ -10,7 +10,7 @@ namespace LSKYGuestAccountControl.Static
 {
     public static class Authentication
     {
-        static Random random = new Random();
+        static Random random = new Random(DateTime.Now.Millisecond);
 
         public static string GetServerName(HttpRequest Request)
         {
@@ -311,7 +311,6 @@ namespace LSKYGuestAccountControl.Static
                 "ancient",
                 "modern",
                 "swift",
-                "young",
                 "old",
                 "bitter",
                 "wooden",
@@ -393,7 +392,7 @@ namespace LSKYGuestAccountControl.Static
                 "cupcake",
                 "book",
                 "bookcase",
-                "rocket",
+                "flying-saucer",
                 "waterfall",
                 "coldness",
                 "friendship",
