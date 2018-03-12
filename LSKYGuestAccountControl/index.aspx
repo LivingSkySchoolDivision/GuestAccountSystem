@@ -80,7 +80,7 @@
         <asp:TableRow>
             <asp:TableCell ColumnSpan="2"><div class="usernameandpassword_title">&nbsp;&nbsp;</div></asp:TableCell>
         </asp:TableRow>
-
+        
         <asp:TableRow>
             <asp:TableCell ColumnSpan="2"><div class="usernameandpassword_title">This account will self-destruct at</div></asp:TableCell>
         </asp:TableRow>
@@ -94,6 +94,8 @@
         <asp:TableRow>
             <asp:TableCell>
                 <br/>
+                <h2>It may take up to 15 minutes for this account to become active</h2>
+                If the above account doesn't work immediately, check back after <asp:Label ID="lblAccountActiveTime" runat="server" Text=""></asp:Label>
                 <h2>Using this account on School Division Computers</h2>
                 <p>This account can be used to sign into any Windows-based school division computer . It will <i>not</i> have access to the network drives (Z drive, Public/Private, Handin/Handout), and may not have access to most printers.</p>
                 

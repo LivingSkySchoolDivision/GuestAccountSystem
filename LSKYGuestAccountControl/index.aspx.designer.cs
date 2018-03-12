@@ -148,6 +148,15 @@ namespace LSKYGuestAccountControl {
         protected global::System.Web.UI.WebControls.Table tblNewAccountInstructions;
         
         /// <summary>
+        /// lblAccountActiveTime control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAccountActiveTime;
+        
+        /// <summary>
         /// tblActiveAccounts control.
         /// </summary>
         /// <remarks>

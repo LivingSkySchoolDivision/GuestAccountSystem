@@ -154,6 +154,7 @@ namespace LSKYGuestAccountControl
                     lblUsername.Text = activatedAccount.sAMAccountName;
                     lblPassword.Text = activatedAccount.Password;
                     lblExpires.Text = DateTime.Today.AddDays(1).AddMinutes(-1).ToString();
+                    lblAccountActiveTime.Text = DateTime.Now.AddMinutes(15).ToShortTimeString();
 
                     tblControls.Visible = false;
                     tblIndexInstructions.Visible = false;
