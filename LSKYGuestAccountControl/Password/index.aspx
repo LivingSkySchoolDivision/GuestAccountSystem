@@ -15,9 +15,13 @@
         <div>
             <div class="usernameandpassword_title">Random password:</div>
             <asp:TableCell><div class="usernameandpassword"><asp:Label ID="lblPassword" runat="server" Text=""></asp:Label></div></asp:TableCell>            
+            <br /><br />
+            <div class="usernameandpassword_title">Don't like it? Here's 5 more:</div>
+            <asp:TableCell><div class="usernameandpassword"><asp:Label ID="lblPasswords" runat="server" Text=""></asp:Label></div></asp:TableCell>            
         </div>
         <div>
-            Refresh the page to generate a new one.
+            <br />
+            Refresh the page to generate more.
         </div>
 
     </form>
