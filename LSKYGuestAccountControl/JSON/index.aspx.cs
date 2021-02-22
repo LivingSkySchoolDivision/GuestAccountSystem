@@ -20,6 +20,7 @@ namespace LSKYGuestAccountControl.JSON
             Response.Clear();
             Response.ContentEncoding = Encoding.UTF8;
             Response.ContentType = "application/json; charset=utf-8";
+            Response.Headers.Add("Access-Control-Allow-Origin", "*");
             Response.Write("{\n");
             Response.Write("\"TotalGuestAccounts\" : " + allGuestAccounts.Count() + ",\n");
             Response.Write("\"TotalActive\" : " + allGuestAccounts.Count(g => g.IsEnabled) + ",\n");
